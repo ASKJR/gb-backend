@@ -1,0 +1,25 @@
+{
+  "name": "gb-backend",
+  "version": "1.0.0",
+  "description": "test app for gb",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon ./index.js",
+    "start": "node ./index.js"
+  },
+  "author": "Alberto Kato",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "faker": "^4.1.0",
+    "morgan": "^1.9.1",
+    "mysql2": "^2.0.0",
+    "sequelize": "^5.21.2",
+    "sequelize-cli": "^5.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  }
+}

@@ -1,0 +1,31 @@
+version: "2"
+
+networks:
+  default:
+    external:
+      name: main
+
+services:
+  gb-api:
+    build: .
+    container_name: gb-api
+    environment:
+      - DB_DATABASE=gb
+      - DB_HOST=mysql.web-base
+      - DB_PASSWORD=root
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - NODE_ENV=development
+      - VIRTUAL_HOST=gb-api
+      - VIRTUAL_PORT=3000
+    expose:
+      - "3000"
+    external_links:
+      - nginx-proxy.web-base
+    volumes:
+      - .:/application
+      - .:/mnt/base
+      - /application/node_modules
+    working_dir: /application
+    entrypoint: npm
+    command: run dev
