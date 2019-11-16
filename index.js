@@ -15,7 +15,7 @@ app.get('/health_check', (req, res) => {
 })
 
 //routes
-require('./routes/routes')(app);
+require('./src/routes/routes')(app);
 
 
 //server
