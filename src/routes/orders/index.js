@@ -24,7 +24,7 @@ router.post('/', orderValidations, async (req, res) => {
 
   const user = await User.findOne({
     where: {
-        cpf
+      cpf
     }
   })
 
@@ -41,9 +41,51 @@ router.post('/', orderValidations, async (req, res) => {
     date,
     status
   });
-  
+
   return res.json(order)
 })
+
+router.put('/', [check('id').isNumeric(), orderValidations], async (req, res) => {
+  
+  const errors = validationResult(req)
+  
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() })
+  }
+  
+  const { id, cod, value, date, cpf } = req.body;
+
+  const user = await User.findOne({
+    where: {
+      cpf
+    }
+  })
+
+  if (!user) {
+    return res.status(422).json({ errors: "CPF inválido" });
+  }
+
+  const order = await Order.findOne({
+    where: {
+      id,
+      status: ORDER_STATUS_VALIDATION
+    }
+  });
+
+  if (!order) {
+    return res.status(422).json({ errors: "Compra inválida para atualização" });
+  }
+
+  const updatedOrder = await order.update({
+    cod,
+    user_id: user.id,
+    value,
+    date
+  })
+
+  return res.send(updatedOrder)
+
+});
 
 
 module.exports = router;
