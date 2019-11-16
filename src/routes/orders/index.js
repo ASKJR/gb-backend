@@ -87,5 +87,32 @@ router.put('/', [check('id').isNumeric(), orderValidations], async (req, res) =>
 
 });
 
+router.delete('/', [check('id').isNumeric()], async (req, res) => {
+  
+  const errors = validationResult(req)
+  
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() })
+  }
+  
+  const { id } = req.body;
+
+  const order = await Order.findOne({
+    where: {
+      id,
+      status: ORDER_STATUS_VALIDATION
+    }
+  });
+
+  if (!order) {
+    return res.status(422).json({ errors: "Não foi possível deletar essa compra." });
+  }
+
+  order.destroy();
+
+  return res.status(200).json({ msg: "Compra excluída com sucesso!" });
+
+});
+
 
 module.exports = router;
