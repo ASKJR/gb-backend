@@ -1,20 +1,40 @@
 
 const express = require('express');
 const router  = express.Router();
-
 const { User } = require('../../src/models');
+const { check, validationResult } = require('express-validator');
 
-// router.get('/:id?', require('./service/find'));
-// router.post('/', require('./service/create'));
-// router.put('/:id', require('./service/update'));
-// router.patch('/:id', require('./service/update'));
-// router.delete('/:id', require('./service/delete'));
+
+const userValidations = [
+  check('name').isLength({ min: 1}),
+  check('cpf').isLength({ min: 1}),
+  check('email').isEmail(),
+  check('password').isLength({ min: 6})
+]
+
 router.get('/', async (req, res) => {
-    //const users = await User.findAll()
-    //res.send([])
-    const users = await User.findAll()
-    res.send(users)
-    
+  const users = await User.findAll()
+  res.send(users)    
+})
+
+router.post('/', userValidations, async (req, res) => {
+  
+  const errors = validationResult(req)
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() })
+  }
+
+  const { name, cpf, email, password} = req.body;
+
+  const user = await User.create({
+    name,
+    cpf,
+    email,
+    password
+  })
+
+  return res.json(user)
 })
 
 

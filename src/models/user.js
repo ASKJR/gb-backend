@@ -5,10 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     cpf: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
-    created_at: DataTypes.DATE,
-    updated_at: DataTypes.DATE
   }, {
-    timestamps: false,
     freezeTableName: true,
     tableName: 'users'
   });
