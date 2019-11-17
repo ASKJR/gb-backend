@@ -5,13 +5,28 @@ const { check, validationResult } = require('express-validator');
 const { auth } = require('../../middlewares/auth')
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const CPF = require('cpf');
 
 
 const userValidations = [
   check('name').isLength({ min: 1}),
-  check('cpf').isLength({ min: 1}),
   check('email').isEmail(),
   check('password').isLength({ min: 6})
+]
+
+const cpfValidation = [
+	check('cpf')
+		.custom((value, { req }) => {
+			return new Promise((resolve, reject) => {
+				const { cpf } = req.body;
+				if (!CPF.isValid(cpf)) {
+					return reject();
+				}
+				else {
+					return resolve();
+				}
+			});
+		}).withMessage('CPF inválido'),
 ]
 
 router.get('/', auth, async (req, res) => {
@@ -19,7 +34,7 @@ router.get('/', auth, async (req, res) => {
   res.send(users)    
 })
 
-router.post('/', userValidations, async (req, res) => {
+router.post('/', [userValidations, cpfValidation] , async (req, res) => {
   
   const errors = validationResult(req)
 
@@ -41,7 +56,7 @@ router.post('/', userValidations, async (req, res) => {
 
   user = await User.create({
     name,
-    cpf,
+    cpf: CPF.format(cpf),
     email,
     password
   })
