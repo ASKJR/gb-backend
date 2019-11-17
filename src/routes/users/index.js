@@ -3,6 +3,8 @@ const router  = express.Router();
 const { User } = require('../../models');
 const { check, validationResult } = require('express-validator');
 const { auth } = require('../../middlewares/auth')
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 
 const userValidations = [
@@ -27,7 +29,17 @@ router.post('/', userValidations, async (req, res) => {
 
   const { name, cpf, email, password} = req.body;
 
-  const user = await User.create({
+  let user = await User.findOne({
+    where: {
+      [Op.or]: [{email},{cpf}]
+    }
+  })
+
+  if (user) {
+    return res.status(422).json({ errors: "Usuário já cadastrado" })
+  }
+
+  user = await User.create({
     name,
     cpf,
     email,
