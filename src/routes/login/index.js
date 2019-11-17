@@ -22,16 +22,14 @@ router.post('/', loginValidations, async (req, res) => {
 
   const { email, password} = req.body;
 
-  const loggedUser = await User.findOne({
-    where: {
-      email,
-      password,
-    }
-  })
+  const loggedUser = await User.findOne({ where: { email} })
 
   if (!loggedUser) {
     return res.status(500).json({erros:"Login inválido"});
+  } else if (!await loggedUser.validPassword(password)) {
+    return res.status(500).json({erros:"Login inválido"});
   }
+
   const { id } = loggedUser;
 
   var token = jwt.sign({ id }, process.env.SECRET_JWT, {
