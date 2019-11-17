@@ -4,6 +4,7 @@ const { Order, User } = require('../../models');
 const { check, validationResult } = require('express-validator');
 const { ORDER_STATUS_VALIDATION, ORDER_STATUS_APPROVED, CPF_MASTER} = require('../../helpers/constants')
 const { computeCashback } = require('../../helpers/cashback')
+const { auth } = require('../../middlewares/auth')
 
 const orderValidations = [
   check('cod').isLength({ min: 1}),
@@ -12,7 +13,7 @@ const orderValidations = [
   check('cpf').isLength({ min: 1}),
 ]
 
-router.get('/',  async (req, res) => {
+router.get('/', auth ,  async (req, res) => {
   
   const orders = await Order.findAll()
   let ordersComputed = [];
@@ -40,7 +41,7 @@ router.get('/',  async (req, res) => {
 })
 
 
-router.post('/', orderValidations, async (req, res) => {
+router.post('/', [auth, orderValidations], async (req, res) => {
   
   const errors = validationResult(req)
 
@@ -73,7 +74,7 @@ router.post('/', orderValidations, async (req, res) => {
   return res.json(order)
 })
 
-router.put('/', [check('id').isNumeric(), orderValidations], async (req, res) => {
+router.put('/', [auth, check('id').isNumeric(), orderValidations], async (req, res) => {
   
   const errors = validationResult(req)
   
@@ -115,7 +116,7 @@ router.put('/', [check('id').isNumeric(), orderValidations], async (req, res) =>
 
 });
 
-router.delete('/', [check('id').isNumeric()], async (req, res) => {
+router.delete('/', [auth, check('id').isNumeric()], async (req, res) => {
   
   const errors = validationResult(req)
   

@@ -2,8 +2,9 @@ const express = require('express');
 const router  = express.Router();
 const request = require('request');
 const { GB_API } = require('../../helpers/constants')
+const { auth } = require('../../middlewares/auth')
 
-router.get('/status', (req, res) => { 
+router.get('/status', auth, (req, res) => { 
   
   request(GB_API, function (error, response, body) {
     

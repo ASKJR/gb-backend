@@ -2,6 +2,9 @@ const express = require('express');
 const router  = express.Router();
 const { User } = require('../../models');
 const { check, validationResult } = require('express-validator');
+const jwt = require('jsonwebtoken');
+
+require("dotenv-safe").config();
 
 
 const loginValidations = [
@@ -14,7 +17,7 @@ router.post('/', loginValidations, async (req, res) => {
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
-    return res.status(200).json(null)
+    return res.status(500).json({erros:"Login inválido"});
   }
 
   const { email, password} = req.body;
@@ -26,7 +29,17 @@ router.post('/', loginValidations, async (req, res) => {
     }
   })
 
-  return res.json(loggedUser)
+  if (!loggedUser) {
+    return res.status(500).json({erros:"Login inválido"});
+  }
+  const { id } = loggedUser;
+
+  var token = jwt.sign({ id }, process.env.SECRET_JWT, {
+    expiresIn: 60 * 60// expira em 1h
+  });
+
+  return res.status(200).send({ auth: true, token: token });
+
 })
 
 

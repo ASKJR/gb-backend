@@ -2,6 +2,7 @@ const express = require('express');
 const router  = express.Router();
 const { User } = require('../../models');
 const { check, validationResult } = require('express-validator');
+const { auth } = require('../../middlewares/auth')
 
 
 const userValidations = [
@@ -11,7 +12,7 @@ const userValidations = [
   check('password').isLength({ min: 6})
 ]
 
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
   const users = await User.findAll()
   res.send(users)    
 })
