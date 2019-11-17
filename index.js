@@ -10,8 +10,8 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-app.get('/health_check', (req, res) => {
-    res.send({ status: 200 })
+app.get('/', (req, res) => {
+    res.send({ 'gb-api': 'GB - teste pratico dev-backend' })
 })
 
 //routes
