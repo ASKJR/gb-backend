@@ -7,6 +7,6 @@
 
 Instructions:
 
-1) Create a new User (http://gb-api.albertokato.com.br/users)
-2) Login (http://gb-api.albertokato.com.br/login)
+1) Create a new User
+2) Login
 3) Make your desired requests with the token you just received after login. (headers: x-access-token). 
